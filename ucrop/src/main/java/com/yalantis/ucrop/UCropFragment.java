@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ public class UCropFragment extends Fragment {
     public static final int SCALE = 1;
     public static final int ROTATE = 2;
     public static final int ALL = 3;
+    private boolean mIsDirty = false;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -110,6 +112,18 @@ public class UCropFragment extends Fragment {
         fragment.setArguments(uCrop);
         return fragment;
     }
+
+    /** Whether or not the image was modified */
+    private void setDirty(boolean dirty) {
+        mIsDirty = dirty;
+    }
+
+    /** Whether or not the image was modified */
+    public boolean isDirty() {
+        return mIsDirty;
+    }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -310,6 +324,7 @@ public class UCropFragment extends Fragment {
     private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
         @Override
         public void onRotate(float currentAngle) {
+            if (currentAngle != 0) setDirty(true);
             setAngleText(currentAngle);
         }
 
@@ -320,21 +335,25 @@ public class UCropFragment extends Fragment {
 
         @Override
         public void onBrightness(float currentBrightness) {
+            if (currentBrightness != 0) setDirty(true);
             setBrightnessText(currentBrightness);
         }
 
         @Override
         public void onContrast(float currentContrast) {
+            if (currentContrast != 0) setDirty(true);
             setContrastText(currentContrast);
         }
 
         @Override
         public void onSaturation(float currentSaturation) {
+            if (currentSaturation != 0) setDirty(true);
             setSaturationText(currentSaturation);
         }
 
         @Override
         public void onSharpness(float currentSharpness) {
+            if (currentSharpness != 0) setDirty(true);
             setSharpnessText(currentSharpness);
         }
 
@@ -619,13 +638,17 @@ public class UCropFragment extends Fragment {
     }
 
     private void resetRotation() {
-        mGestureCropImageView.postRotate(-mGestureCropImageView.getCurrentAngle());
+        float angle = -mGestureCropImageView.getCurrentAngle();
+        mGestureCropImageView.postRotate(angle);
         mGestureCropImageView.setImageToWrapCropBounds();
+        mOverlayView.rotate(angle);
     }
 
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
         mGestureCropImageView.setImageToWrapCropBounds();
+
+        mOverlayView.rotate(angle);
     }
 
     private final View.OnClickListener mStateClickListener = new View.OnClickListener() {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
@@ -41,7 +42,7 @@ public class UCropView extends FrameLayout {
     private void setListenersToViews() {
         mGestureCropImageView.setCropBoundsChangeListener(new CropBoundsChangeListener() {
             @Override
-            public void onCropAspectRatioChanged(float cropRatio) {
+            public void onCropAspectRatioChanged(float cropRatio, boolean isSourceAspect) {
                 mViewOverlay.setTargetAspectRatio(cropRatio);
             }
         });

@@ -3,13 +3,16 @@ package com.yalantis.ucrop.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.yalantis.ucrop.R;
@@ -266,7 +269,27 @@ public class OverlayView extends View {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
+
+        mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.OnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+                return true;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+                mIsPinching = true;
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+                mIsPinching = false;
+            }
+        });
     }
+
+    private boolean mIsPinching = false;
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -296,9 +319,13 @@ public class OverlayView extends View {
         drawCropGrid(canvas);
     }
 
+    ScaleGestureDetector mScaleDetector;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mCropViewRect.isEmpty() || mFreestyleCropMode == FREESTYLE_CROP_MODE_DISABLE) {
+        boolean result = mScaleDetector.onTouchEvent(event);
+
+        if (mCropViewRect.isEmpty() || mFreestyleCropMode == FREESTYLE_CROP_MODE_DISABLE || mIsPinching) {
             return false;
         }
 
@@ -395,6 +422,15 @@ public class OverlayView extends View {
             updateGridPoints();
             postInvalidate();
         }
+    }
+
+    public void rotate(float angle) {
+        Matrix m = new Matrix();
+        m.reset();
+        m.setRotate(angle, mCropViewRect.centerX(), mCropViewRect.centerY());
+        m.mapRect(mCropViewRect);
+        updateGridPoints();
+        postInvalidate();
     }
 
     /**

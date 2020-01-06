@@ -27,6 +27,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.CropParameters;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.model.ImageState;
+import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.ColorFilterGenerator;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
@@ -119,7 +120,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             crop(resizeScale);
 
             if (mBrightness != 0.0f || mContrast != 0.0f || mSaturation != 0.0f || mSharpness != 0.0f) {
-                Bitmap sourceBitmap = BitmapFactory.decodeFile(mImageOutputPath);
+                Bitmap sourceBitmap = BitmapLoadUtils.loadAndRotateBitmap(mImageOutputPath);
                 Bitmap alteredBitmap = Bitmap.createBitmap(sourceBitmap.getWidth(), sourceBitmap.getHeight(), sourceBitmap.getConfig());
 
                 ColorMatrix cm = new ColorMatrix();

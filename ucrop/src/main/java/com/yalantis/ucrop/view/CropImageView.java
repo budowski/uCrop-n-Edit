@@ -146,7 +146,7 @@ public class CropImageView extends TransformImageView {
         }
 
         if (mCropBoundsChangeListener != null) {
-            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio);
+            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, targetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO);
         }
     }
 
@@ -396,7 +396,7 @@ public class CropImageView extends TransformImageView {
         setupInitialImagePosition(drawableWidth, drawableHeight);
 
         if (mCropBoundsChangeListener != null) {
-            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio);
+            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, mTargetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO);
         }
         if (mTransformImageListener != null) {
             mTransformImageListener.onScale(getCurrentScale());
