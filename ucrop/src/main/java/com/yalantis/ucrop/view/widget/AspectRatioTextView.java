@@ -68,6 +68,8 @@ public class AspectRatioTextView extends AppCompatTextView {
 
         if (mAspectRatioX == CropImageView.SOURCE_IMAGE_ASPECT_RATIO || mAspectRatioY == CropImageView.SOURCE_IMAGE_ASPECT_RATIO) {
             mAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO;
+        } else if (mAspectRatioX == CropImageView.FREE_ASPECT_RATIO || mAspectRatioY == CropImageView.FREE_ASPECT_RATIO) {
+            mAspectRatio = CropImageView.FREE_ASPECT_RATIO;
         } else {
             mAspectRatio = mAspectRatioX / mAspectRatioY;
         }
@@ -142,7 +144,7 @@ public class AspectRatioTextView extends AppCompatTextView {
     }
 
     private void toggleAspectRatio() {
-        if (mAspectRatio != CropImageView.SOURCE_IMAGE_ASPECT_RATIO) {
+        if ((mAspectRatio != CropImageView.SOURCE_IMAGE_ASPECT_RATIO) && (mAspectRatio != CropImageView.FREE_ASPECT_RATIO)) {
             float tempRatioW = mAspectRatioX;
             mAspectRatioX = mAspectRatioY;
             mAspectRatioY = tempRatioW;

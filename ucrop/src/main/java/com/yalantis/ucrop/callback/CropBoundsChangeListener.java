@@ -5,6 +5,6 @@ package com.yalantis.ucrop.callback;
  */
 public interface CropBoundsChangeListener {
 
-    void onCropAspectRatioChanged(float cropRatio, boolean isSourceAspect);
+    void onCropAspectRatioChanged(float cropRatio, boolean isFreeAspectRatio);
 
 }

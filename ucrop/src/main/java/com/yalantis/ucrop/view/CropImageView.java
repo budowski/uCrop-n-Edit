@@ -37,6 +37,7 @@ public class CropImageView extends TransformImageView {
     public static final int DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION = 500;
     public static final float DEFAULT_MAX_SCALE_MULTIPLIER = 10.0f;
     public static final float SOURCE_IMAGE_ASPECT_RATIO = 0f;
+    public static final float FREE_ASPECT_RATIO = -1f;
     public static final float DEFAULT_ASPECT_RATIO = SOURCE_IMAGE_ASPECT_RATIO;
 
     private final RectF mCropRect = new RectF();
@@ -139,14 +140,15 @@ public class CropImageView extends TransformImageView {
             return;
         }
 
-        if (targetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO) {
+        boolean isFreeAspectRatio = targetAspectRatio == FREE_ASPECT_RATIO;
+        if ((targetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO) || (targetAspectRatio == FREE_ASPECT_RATIO)) {
             mTargetAspectRatio = drawable.getIntrinsicWidth() / (float) drawable.getIntrinsicHeight();
         } else {
             mTargetAspectRatio = targetAspectRatio;
         }
 
         if (mCropBoundsChangeListener != null) {
-            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, targetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO);
+            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, isFreeAspectRatio);
         }
     }
 
@@ -377,8 +379,9 @@ public class CropImageView extends TransformImageView {
 
         float drawableWidth = drawable.getIntrinsicWidth();
         float drawableHeight = drawable.getIntrinsicHeight();
+        boolean isFreeAspectRatio = mTargetAspectRatio == FREE_ASPECT_RATIO;
 
-        if (mTargetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO) {
+        if ((mTargetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO) || (mTargetAspectRatio == FREE_ASPECT_RATIO)) {
             mTargetAspectRatio = drawableWidth / drawableHeight;
         }
 
@@ -396,7 +399,7 @@ public class CropImageView extends TransformImageView {
         setupInitialImagePosition(drawableWidth, drawableHeight);
 
         if (mCropBoundsChangeListener != null) {
-            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, mTargetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO);
+            mCropBoundsChangeListener.onCropAspectRatioChanged(mTargetAspectRatio, isFreeAspectRatio);
         }
         if (mTransformImageListener != null) {
             mTransformImageListener.onScale(getCurrentScale());
@@ -513,6 +516,8 @@ public class CropImageView extends TransformImageView {
 
         if (targetAspectRatioX == SOURCE_IMAGE_ASPECT_RATIO || targetAspectRatioY == SOURCE_IMAGE_ASPECT_RATIO) {
             mTargetAspectRatio = SOURCE_IMAGE_ASPECT_RATIO;
+        } else if (targetAspectRatioX == FREE_ASPECT_RATIO || targetAspectRatioY == FREE_ASPECT_RATIO) {
+            mTargetAspectRatio = FREE_ASPECT_RATIO;
         } else {
             mTargetAspectRatio = targetAspectRatioX / targetAspectRatioY;
         }
