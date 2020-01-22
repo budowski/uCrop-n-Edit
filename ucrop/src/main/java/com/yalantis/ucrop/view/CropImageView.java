@@ -320,8 +320,17 @@ public class CropImageView extends TransformImageView {
                         currentScale, deltaScale, willImageWrapCropBoundsAfterTranslate));
             } else {
                 postTranslate(deltaX, deltaY);
-                if (!willImageWrapCropBoundsAfterTranslate) {
-                    zoomInImage(currentScale + deltaScale, mCropRect.centerX(), mCropRect.centerY());
+
+                float[] corners = Arrays.copyOf(mCurrentImageCorners, mCurrentImageCorners.length);
+                RectF rect = RectUtils.trapToRect(corners);
+                float scale = currentScale;
+
+                while ((rect.left + getPaddingLeft() < 0) || (rect.top + getPaddingTop() < 0) || (rect.right - getPaddingRight() > getRight()) || (rect.bottom - getPaddingBottom() > getBottom())) {
+                    zoomOutImage(scale, mCropRect.centerX(), mCropRect.centerY());
+                    scale -= 0.01f;
+
+                    corners = Arrays.copyOf(mCurrentImageCorners, mCurrentImageCorners.length);
+                    rect = RectUtils.trapToRect(corners);
                 }
             }
         }
