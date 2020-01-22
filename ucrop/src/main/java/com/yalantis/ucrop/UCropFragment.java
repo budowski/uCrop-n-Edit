@@ -648,7 +648,6 @@ public class UCropFragment extends Fragment {
 
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
-        mGestureCropImageView.setImageToWrapCropBounds();
 
         mOverlayView.rotate(angle);
     }
