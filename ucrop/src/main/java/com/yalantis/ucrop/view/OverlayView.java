@@ -228,7 +228,10 @@ public class OverlayView extends View {
         mTargetAspectRatio = targetAspectRatio;
         mIsFreeAspectRatio = isFreeAspectRatio;
 
-        if (targetAspectRatio >= 1.0) {
+        if (isFreeAspectRatio) {
+            mCropRectMinHeight = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_min_size);
+            mCropRectMinWidth = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_min_size);
+        } else if (targetAspectRatio >= 1.0) {
             mCropRectMinHeight = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_min_size);
             mCropRectMinWidth = (int) (mCropRectMinHeight * targetAspectRatio);
         } else {
@@ -476,6 +479,23 @@ public class OverlayView extends View {
         m.reset();
         m.setRotate(angle, mCropViewRect.centerX(), mCropViewRect.centerY());
         m.mapRect(mCropViewRect);
+
+        if (
+                (mCropViewRect.bottom > getBottom()) ||
+                (mCropViewRect.top < 0) ||
+                (mCropViewRect.right > getRight()) ||
+                (mCropViewRect.left < 0)
+        ) {
+            // After rotation, overlay is overflowing from screen edges - fix this
+
+            mCropViewRect.set(
+                    mCropViewRect.left < 0 ? 0 : mCropViewRect.left,
+                    mCropViewRect.top < 0 ? 0 : mCropViewRect.top,
+                    mCropViewRect.right > getRight() ? getRight() : mCropViewRect.right,
+                    mCropViewRect.bottom > getBottom() ? getBottom() : mCropViewRect.bottom
+                    );
+        }
+
         updateGridPoints();
         postInvalidate();
     }
