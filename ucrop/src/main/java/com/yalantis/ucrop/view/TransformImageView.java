@@ -31,6 +31,8 @@ import com.yalantis.ucrop.util.ColorFilterGenerator;
 import com.yalantis.ucrop.util.FastBitmapDrawable;
 import com.yalantis.ucrop.util.RectUtils;
 
+import java.util.Arrays;
+
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
  * <p/>
@@ -467,6 +469,11 @@ public class TransformImageView extends AppCompatImageView {
         if (mTransformImageListener != null) {
             mTransformImageListener.onLoadComplete();
         }
+    }
+
+    public RectF getRect() {
+        float[] corners = Arrays.copyOf(mCurrentImageCorners, mCurrentImageCorners.length);
+        return RectUtils.trapToRect(corners);
     }
 
     /**

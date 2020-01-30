@@ -33,6 +33,7 @@ public class UCropView extends FrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView);
         mViewOverlay.processStyledAttributes(a);
         mGestureCropImageView.processStyledAttributes(a);
+        mViewOverlay.setUnderlyingImageView(mGestureCropImageView);
         a.recycle();
 
 
@@ -79,5 +80,6 @@ public class UCropView extends FrameLayout {
         setListenersToViews();
         mGestureCropImageView.setCropRect(getOverlayView().getCropViewRect());
         addView(mGestureCropImageView, 0);
+        mViewOverlay.setUnderlyingImageView(mGestureCropImageView);
     }
 }

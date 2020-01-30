@@ -9,11 +9,13 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.callback.OverlayViewChangeListener;
@@ -21,6 +23,7 @@ import com.yalantis.ucrop.util.RectUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
@@ -77,6 +80,7 @@ public class OverlayView extends View {
 
     private boolean mShouldSetupCropBounds;
     private boolean mIsFreeAspectRatio;
+    private TransformImageView mUnderlyingImageView;
 
     {
         mTouchPointThreshold = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_corner_touch_threshold);
@@ -104,6 +108,10 @@ public class OverlayView extends View {
 
     public void setOverlayViewChangeListener(OverlayViewChangeListener callback) {
         mCallback = callback;
+    }
+    
+    public void setUnderlyingImageView(TransformImageView imageView) {
+        mUnderlyingImageView = imageView;
     }
 
     @NonNull
@@ -498,6 +506,26 @@ public class OverlayView extends View {
 
         updateGridPoints();
         postInvalidate();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RectF underlayingRect = mUnderlyingImageView.getRect();
+
+                if (mCropViewRect.height() > underlayingRect.height()) {
+                    float diff = (mCropViewRect.height() - underlayingRect.height()) / 2;
+                    mCropViewRect.set(
+                            mCropViewRect.left,
+                            mCropViewRect.top + diff,
+                            mCropViewRect.right,
+                            mCropViewRect.bottom - diff
+                    );
+
+                    updateGridPoints();
+                    postInvalidate();
+                }
+            }
+        }, 100);
     }
 
     /**
