@@ -523,6 +523,8 @@ public class OverlayView extends View {
 
                     updateGridPoints();
                     postInvalidate();
+
+                    mCallback.onCropRectUpdated(mCropViewRect);
                 }
             }
         }, 100);
