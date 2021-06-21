@@ -523,9 +523,9 @@ public class OverlayView extends View {
 
                     updateGridPoints();
                     postInvalidate();
-
-                    mCallback.onCropRectUpdated(mCropViewRect);
                 }
+
+                mCallback.onCropRectUpdated(mCropViewRect);
             }
         }, 100);
     }
