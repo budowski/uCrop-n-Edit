@@ -8,6 +8,8 @@ LOCAL_SRC_FILES := uCrop.cpp
 LOCAL_LDLIBS    := -landroid -llog -lz
 LOCAL_STATIC_LIBRARIES := libpng libjpeg_static
 
+LOCAL_LDFLAGS += -Wl,--page-size=65536
+
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,libpng)
